@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - PRISMA COKRO</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header class="app-header">
@@ -13,12 +13,12 @@
       <h1>Dashboard Analisis Risiko Privasi</h1>
       <p class="subtitle">Sistem Evaluasi Risiko Privasi berdasarkan Likelihood–Impact Matrix</p>
     </div>
-    <a href="index.html" class="btn-primary">KEMBALI</a>
+    <a href="../index.html" class="btn-primary">KEMBALI</a>
   </header>
 
   <main class="app-main">
     <section class="card">
-      <h2>1. Input Parameter Pemrosesan Data</h2>
+      <h2>Input Parameter Pemrosesan Data</h2>
 
 <form id="risk-form" class="form-grid">
   <!-- 1. Nama Skenario -->
@@ -255,14 +255,14 @@
 
     <section class="results-grid">
       <article class="card" id="summary-card">
-        <h2>2. Ringkasan Risiko</h2>
+        <h2>Ringkasan Risiko</h2>
         <div id="summary-content" class="summary-content placeholder">
           Input Parameter di atas kemudian klik <strong>Hitung Risiko</strong> untuk melihat hasil analisis.
         </div>
       </article>
 
       <article class="card">
-        <h2>3. Matriks Likelihood–Impact</h2>
+        <h2>Matriks Likelihood–Impact</h2>
         <div id="matrix-legend">
           <span class="legend low">Rendah</span>
           <span class="legend medium">Sedang</span>
@@ -275,21 +275,21 @@
       </article>
 
       <article class="card">
-        <h2>4. Evaluasi Kepatuhan UU PDP 2022</h2>
+        <h2>Evaluasi Kepatuhan UU PDP 2022</h2>
         <div id="pdp-results" class="table-wrapper placeholder">
           Belum ada data. Jalankan analisis terlebih dahulu.
         </div>
       </article>
 
       <article class="card">
-        <h2>5. Pemetaan ke NIST Cybersecurity Framework 2.0</h2>
+        <h2>Pemetaan ke NIST Cybersecurity Framework 2.0</h2>
         <div id="nist-results" class="table-wrapper placeholder">
           Belum ada data. Jalankan analisis terlebih dahulu.
         </div>
       </article>
 
       <article class="card">
-        <h2>6. Rekomendasi Otomatis</h2>
+        <h2>Rekomendasi Otomatis</h2>
         <div id="recommendations" class="table-wrapper placeholder">
           Belum ada rekomendasi. Jalankan analisis terlebih dahulu.
         </div>
@@ -305,8 +305,8 @@
   </footer>
 
   <!-- PENTING: urutan script -->
-  <script src="rules.js"></script>
-  <script src="riskEngine.js"></script>
-  <script src="app.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/riskEngine.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
