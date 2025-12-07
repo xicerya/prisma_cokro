@@ -1,5 +1,5 @@
 // riskEngine.js
-// Mesin analisis risiko yang memakai rules.js
+// Mesin analisis risiko yang memakai rules.js + integrasi LegalEngine (legalCheck.js)
 
 const RiskEngine = (() => {
   function categorizeRisk(score) {
@@ -8,54 +8,142 @@ const RiskEngine = (() => {
     return "Tinggi";
   }
 
+  function deriveDataCategoriesFromDataType(dataType) {
+    const t = (dataType || "").toLowerCase();
+    if (t === "identitas") {
+      return ["ktp", "sim"];
+    }
+    if (t === "biometrik") {
+      return ["wajah", "suara"];
+    }
+    if (t === "umum") {
+      return ["nama"];
+    }
+    return [];
+  }
+
   function analyze(params) {
-    // Selalu pakai rule engine
-    const autoInfoRaw = RiskRules.inferBaseLikelihoodImpact(params) || {};
+    // 1. Likelihood & Impact awal dari rules.js
+    let autoInfoRaw = {};
+    if (typeof RiskRules !== "undefined" && RiskRules.inferBaseLikelihoodImpact) {
+      autoInfoRaw = RiskRules.inferBaseLikelihoodImpact(params) || {};
+    }
 
     const autoInfo = {
       likelihood:
         typeof autoInfoRaw.likelihood === "number" ? autoInfoRaw.likelihood : 3,
       impact:
         typeof autoInfoRaw.impact === "number" ? autoInfoRaw.impact : 3,
-      reasons: Array.isArray(autoInfoRaw.reasons)
-        ? autoInfoRaw.reasons
-        : ["Menggunakan nilai default."],
+      reasons: Array.isArray(autoInfoRaw.reasons) ? autoInfoRaw.reasons : []
     };
 
-    let likelihood = autoInfo.likelihood;
-    let impact = autoInfo.impact;
+    const baseLikelihood = autoInfo.likelihood;
+    const baseImpact = autoInfo.impact;
+    const baseRiskScore = baseLikelihood * baseImpact;
+    const baseRiskLevel = categorizeRisk(baseRiskScore); // Rendah / Sedang / Tinggi
 
-    // clamp 1–5
-    likelihood = Math.max(1, Math.min(5, likelihood));
-    impact = Math.max(1, Math.min(5, impact));
+    // 2. Evaluasi kepatuhan UU PDP & NIST
+    let pdpResults = [];
+    let nistResults = [];
+    let recommendations = [];
 
-    const riskScore = likelihood * impact;
-    const riskLevel = categorizeRisk(riskScore);
+    if (typeof RiskRules !== "undefined") {
+      if (typeof RiskRules.evaluatePDP === "function") {
+        pdpResults = RiskRules.evaluatePDP(params) || [];
+      }
+      if (typeof RiskRules.evaluateNIST === "function") {
+        nistResults = RiskRules.evaluateNIST(params) || [];
+      }
+      if (typeof RiskRules.generateRecommendations === "function") {
+        recommendations =
+          RiskRules.generateRecommendations({
+            params,
+            pdpResults,
+            nistResults,
+            riskScore: baseRiskScore,
+            riskLevel: baseRiskLevel
+          }) || [];
+      }
+    }
 
-    const pdpResults = RiskRules.evaluatePDP(params);
-    const nistResults = RiskRules.evaluateNIST(params);
+    // 3. Integrasi dengan LegalEngine
+    let legalContext = null;
+    let finalRiskLevel = baseRiskLevel;
+    let legalOverride = null;
 
-    const recommendations = RiskRules.generateRecommendations({
-      params,
-      riskScore,
-      riskLevel,
-      pdpResults,
-      nistResults,
-    });
+    if (
+      typeof window !== "undefined" &&
+      window.LegalEngine &&
+      typeof window.LegalEngine.evaluateLegalContext === "function"
+    ) {
+      const platformType = params.platformType || "lainnya";
+      const serviceName = params.serviceName || "";
+
+      const dataCategories =
+        Array.isArray(params.dataCategories) && params.dataCategories.length > 0
+          ? params.dataCategories
+          : deriveDataCategoriesFromDataType(params.dataType);
+
+      const matrixRiskLevel =
+        baseRiskLevel === "Tinggi"
+          ? "High"
+          : baseRiskLevel === "Sedang"
+          ? "Medium"
+          : "Low";
+
+      legalContext = window.LegalEngine.evaluateLegalContext({
+        platformType,
+        serviceName,
+        dataCategories,
+        matrixRiskLevel
+      });
+
+      if (
+        legalContext &&
+        legalContext.finalRisk &&
+        legalContext.finalRisk.finalRiskLevel
+      ) {
+        const fr = legalContext.finalRisk.finalRiskLevel;
+        finalRiskLevel =
+          fr === "High" ? "Tinggi" : fr === "Medium" ? "Sedang" : "Rendah";
+        legalOverride = legalContext.finalRisk.overrideReason || null;
+      }
+    }
+
+    // 4. APPLY OVERRIDE 1×1 UNTUK LEGAL + PEMERINTAH
+    // ------------------------------------------------
+    // Kalau layanan LEGAL & diakui lembaga pemerintah (OJK / Komdigi PSE),
+    // termasuk e-wallet yang masuk registry tersebut, kita anggap residual risk:
+    // Likelihood = 1, Impact = 1 → kotak hijau 1×1 di matrix.
+    let effectiveLikelihood = baseLikelihood;
+    let effectiveImpact = baseImpact;
+
+    if (
+      legalContext &&
+      legalContext.finalRisk &&
+      legalContext.finalRisk.fromGovernmentRegistry
+    ) {
+      effectiveLikelihood = 1;
+      effectiveImpact = 1;
+    }
+
+    const effectiveRiskScore = effectiveLikelihood * effectiveImpact;
 
     return {
-      likelihood,
-      impact,
-      riskScore,
-      riskLevel,
+      likelihood: effectiveLikelihood,
+      impact: effectiveImpact,
+      riskScore: effectiveRiskScore,
+      riskLevel: finalRiskLevel, // sudah mempertimbangkan legalitas
       autoInfo,
       pdpResults,
       nistResults,
       recommendations,
+      legalContext,
+      legalOverride
     };
   }
 
   return {
-    analyze,
+    analyze
   };
 })();
