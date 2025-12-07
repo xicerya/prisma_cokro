@@ -34,7 +34,8 @@
       padding: 0;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       scroll-behavior: smooth;
     }
@@ -70,18 +71,19 @@
 
     .nav-inner {
       margin: 0 auto;
+      max-width: 1120px;
       padding: 0.9rem 1.25rem;
-      display: flex !important;
-      align-items: center !important;
-      width: 100% !important;
-      justify-content: space-between !important; /* brand kiri, menu kanan */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
     }
 
     .nav-brand {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin-right: auto !important;
+      margin-right: auto;
     }
 
     .nav-logo {
@@ -134,7 +136,7 @@
     }
 
     .nav-links {
-      margin-left: auto !important;              /* paksa ke paling kanan */
+      margin-left: auto !important;
       display: flex !important;
       justify-content: flex-end !important;
       gap: 1.2rem;
@@ -171,14 +173,8 @@
       width: 100%;
     }
 
-    .nav-cta {
-      display: none;
-    }
-
-    @media (min-width: 768px) {
-      .nav-cta {
-        display: inline-flex;
-      }
+    .nav-links .active {
+      color: var(--accent);
     }
 
     /* BUTTONS */
@@ -309,7 +305,7 @@
       letter-spacing: 0.12em;
     }
 
-    .hero-title span.accent {
+    .hero-title .accent {
       background: linear-gradient(120deg, #22d3ee, #38bdf8, #f97316);
       -webkit-background-clip: text;
       background-clip: text;
@@ -369,7 +365,7 @@
       color: var(--accent);
     }
 
-    /* RIGHT PANEL – PREVIEW KOTAK DASHBOARD */
+    /* RIGHT PANEL – PREVIEW DASHBOARD */
     .hero-right {
       position: relative;
       padding: 1px;
@@ -612,12 +608,6 @@
       border: 1px solid rgba(51, 65, 85, 0.8);
     }
 
-    .preview-link {
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px dashed rgba(56, 189, 248, 0.6);
-    }
-
     /* FOOTER MINI */
     .footer {
       padding: 0.8rem 1.4rem 1.2rem;
@@ -631,41 +621,106 @@
       text-decoration: none;
     }
 
-    /* MOBILE TWEAKS */
+    /* FAB LAPOR / FEEDBACK */
+    .report-fab {
+      position: fixed;
+      right: 1.6rem;
+      bottom: 1.6rem;
+      z-index: 60;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.7rem 1.2rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at 0 50%, rgba(56, 189, 248, 0.25), rgba(15, 23, 42, 1));
+      color: var(--text-main);
+      font-family: "Orbitron", system-ui;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      text-decoration: none;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.9);
+      cursor: pointer;
+      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out;
+    }
+
+    .report-fab-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+      position: relative;
+    }
+
+    .report-fab-dot::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      opacity: 0.6;
+    }
+
+    .report-fab:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.95);
+      border-color: rgba(56, 189, 248, 0.9);
+    }
+
+    .report-fab-label {
+      white-space: nowrap;
+    }
+
     @media (max-width: 640px) {
       .nav-inner {
         padding-inline: 1rem;
       }
+
       .nav-links {
         display: none;
       }
+
       .hero {
         padding-top: 5.5rem;
+      }
+
+      .report-fab {
+        right: 1rem;
+        bottom: 1rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.65rem;
+      }
+
+      .report-fab-label {
+        max-width: 7.5rem;
+        white-space: normal;
+        text-align: right;
       }
     }
   </style>
 </head>
 <body>
-<header class="nav">
-  <div class="nav-inner">
-    <div class="nav-brand">
-      <div class="nav-logo">
-        <div class="nav-logo-dot"></div>
-      </div>
-      <div>
-        <div class="nav-title">PRISMA COKRO</div>
-        <div class="nav-subtitle">
+  <!-- NAVBAR -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <div class="nav-logo-dot"></div>
+        </div>
+        <div>
+          <div class="nav-title">PRISMA COKRO</div>
+          <div class="nav-subtitle"></div>
         </div>
       </div>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html" class="nav-link active">Beranda</a>
+        <a href="tentang.html" class="nav-link">Tentang</a>
+      </nav>
     </div>
-
-    <nav class="nav-links" id="navLinks">
-      <a href="index.html" class="nav-link">Beranda</a>
-      <a href="tentang.html" class="nav-link">Tentang</a>
-    </nav>
-  </div>
-</header>
-
+  </header>
 
   <!-- HERO -->
   <main class="hero" id="hero">
@@ -678,22 +733,24 @@
         </div>
 
         <h1 class="hero-title">
-          PRISMA <span class="accent">COKRO Gen 1.0 (Beta)</span>
+          PRISMA <span class="accent">COKRO Gen 1.0 (beta)</span>
         </h1>
 
         <p class="hero-subtitle">
-          Sebuah
-          <strong>Sistem Analisis Risiko Privasi</strong> Menggunakan
-          <strong>Likelihood–Impact Engine</strong> Berbasis
-          <strong>Rule-Based Automation</strong>
+          Sebuah <strong>Sistem Analisis Risiko Privasi</strong> menggunakan
+          <strong>Likelihood–Impact Engine</strong>, berbasis
+          <strong>Rule-Based Automation</strong>.
         </p>
 
         <div class="hero-metadata">
-          <span><span class="hero-metadata-tag"></span> Menampilkan Matriks Likelihood–Impact, Evaluasi Kepatuhan UU PDP 2022, Pemetaan ke NIST CSF 2.0 &amp; Rekomendasi Otomatis</span>
+          <span>
+            <span class="hero-metadata-tag"></span>
+            Menampilkan Matriks Likelihood–Impact, Evaluasi Kepatuhan UU PDP 2022,
+            Pemetaan ke NIST CSF 2.0 &amp; Rekomendasi Otomatis
+          </span>
         </div>
 
         <div class="hero-actions">
-          <!-- TOMBOL PENTING: MULAI ANALISIS -->
           <a href="dashboard.html" class="btn btn-primary">
             <span>MULAI ANALISIS</span>
           </a>
@@ -724,6 +781,7 @@
                 <span>Matriks Likelihood–Impact</span>
                 <span class="preview-pill">Auto Scoring</span>
               </div>
+
               <div class="preview-matrix">
                 <div class="matrix-cell low"></div>
                 <div class="matrix-cell med"></div>
@@ -757,7 +815,9 @@
               </div>
 
               <div class="preview-metrics">
-                <div class="metric-chip">Skor Risiko: <span>Low/Medium/High</span></div>
+                <div class="metric-chip">
+                  Skor Risiko: <span>Low / Medium / High</span>
+                </div>
               </div>
             </div>
 
@@ -789,9 +849,23 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    Landing page ini hanya tampilan awal. Analisis penuh berjalan di Dashboard Analisis Risiko</a>.
+    Landing page ini hanya tampilan awal. Analisis penuh berjalan di
+    Dashboard Analisis Risiko.
   </footer>
+
+<!-- FAB LAPOR / FEEDBACK -->
+<a
+  class="report-fab"
+  href="https://mail.google.com/mail/?view=cm&fs=1
+&to=munifaryaputra39@gmail.com
+&su=Laporan%20%2F%20Feedback%20PRISMA%20COKRO
+&body=Tuliskan%20masukan%20atau%20laporan%20Anda%20di%20sini..."
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <span class="report-fab-dot"></span>
+  <span class="report-fab-label">Lapor / Feedback</span>
+</a>
+
 </body>
 </html>
-
-
