@@ -4,260 +4,369 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - PRISMA COKRO</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+  </style>
 </head>
 <body>
   <header class="app-header">
     <div>
-      <h1>Dashboard Analisis Risiko Privasi</h1>
-      <p class="subtitle">Sistem Evaluasi Risiko Privasi berdasarkan Likelihood–Impact Matrix</p>
+      <h1>Dashboard PRISMA COKRO</h1>
+      <p class="subtitle"></p>
     </div>
-    <a href="index.html" class="btn-primary">KEMBALI</a>
+    <div class="header-actions">
+      <a href="index.html" class="btn-primary">KEMBALI</a>
+    </div>
   </header>
 
   <main class="app-main">
+    <!-- =================== -->
+    <!-- CARD: FORM INPUT    -->
+    <!-- =================== -->
     <section class="card">
       <h2>Input Parameter Pemrosesan Data</h2>
+      <p class="subtitle">
+        Isi parameter di bawah ini untuk menghitung risiko privasi dan mengevaluasi kepatuhan terhadap UU PDP 2022 &amp; NIST CSF 2.0.
+      </p>
 
-<form id="risk-form" class="form-grid">
-  <!-- 1. Nama Skenario -->
-  <div class="form-group">
-    <label for="scenarioName">Nama skenario</label>
-    <input
-      type="text"
-      id="scenarioName"
-      placeholder="Contoh: Verifikasi identitas pengguna baru"
-    />
-  </div>
+      <form id="risk-form" class="form-grid">
+        <!-- =================== -->
+        <!-- 1. SKENARIO & PLATFORM -->
+        <!-- =================== -->
+        <div class="form-section">
+          <h3 class="form-section-title">1. Informasi Skenario &amp; Platform</h3>
 
-  <!-- 2. Jenis data pribadi -->
-  <div class="form-group">
-    <label for="dataType">Jenis data pribadi utama</label>
-    <select id="dataType" required>
-      <option value="">-- Pilih jenis data --</option>
-      <option value="umum">Data umum (nama, email, nomor HP)</option>
-      <option value="identitas">Data identitas resmi (NIK, SIM, paspor)</option>
-      <option value="biometrik">Data biometrik (wajah, sidik jari, suara)</option>
-      <option value="keuangan">Data keuangan (rekening, kartu, transaksi)</option>
-      <option value="lokasi">Data lokasi</option>
-      <option value="perilaku">
-        Data perilaku / aktivitas (riwayat penggunaan aplikasi)
-      </option>
-      <option value="lainnya">Lainnya / kombinasi</option>
-    </select>
-  </div>
+          <!-- 1. Nama Skenario -->
+          <div class="form-group">
+            <label for="scenarioName">Nama skenario</label>
+            <input
+              type="text"
+              id="scenarioName"
+              placeholder="Contoh: Verifikasi identitas pengguna baru"
+            />
+            <p class="field-hint">
+              Beri nama singkat yang menggambarkan proses pemrosesan data yang sedang dianalisis.
+            </p>
+          </div>
 
-  <!-- 3. Aktivitas pemrosesan -->
-  <div class="form-group">
-    <label for="processingActivity">Aktivitas pemrosesan utama</label>
-    <select id="processingActivity" required>
-      <option value="">-- Pilih aktivitas --</option>
-      <option value="collection">Pengumpulan data</option>
-      <option value="storage">Penyimpanan data</option>
-      <option value="verification">Verifikasi identitas</option>
-      <option value="analysis">Analisis / pemantauan aktivitas</option>
-      <option value="sharing">Berbagi ke pihak lain</option>
-      <option value="transmission">Pengiriman data</option>
-      <option value="deletion">Penghapusan / pemusnahan data</option>
-    </select>
-  </div>
+          <!-- 1b. Jenis platform -->
+          <div class="form-group">
+            <label for="platformType">Jenis platform / layanan</label>
+            <select id="platformType" required>
+              <option value="">-- Pilih jenis platform --</option>
+              <option value="bank">Bank / Lembaga Keuangan</option>
+              <option value="ecommerce">E-commerce / Marketplace</option>
+              <option value="fintech">Fintech</option>
+              <option value="website">Website biasa</option>
+              <option value="game">Game / Game platform</option>
+              <option value="biometric">Layanan verifikasi biometrik</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+            <p class="field-hint">
+              Digunakan untuk analisis legalitas (OJK, Komdigi PSE, AFPI, registry biometrik, dll.).
+            </p>
+          </div>
 
-<!-- 4. Tujuan pemrosesan (skripsi: Tujuan Pemrosesan) -->
-<div class="form-group">
-  <label for="processingPurpose">Tujuan utama pemrosesan data</label>
-  <select id="processingPurpose" required>
-    <option value="">-- Pilih tujuan utama --</option>
-    <option value="verifikasi_identitas">Verifikasi identitas / umur pengguna</option>
-    <option value="penyediaan_layanan">
-      Menyediakan layanan inti (misalnya akses fitur aplikasi)
-    </option>
-    <option value="keamanan_pencegahan_penipuan">
-      Keamanan &amp; pencegahan penipuan
-    </option>
-    <option value="penagihan_pembayaran">
-      Penagihan &amp; pengelolaan pembayaran
-    </option>
-    <option value="personalisasi">
-      Personalisasi tampilan / rekomendasi konten
-    </option>
-    <option value="pemasaran">
-      Pemasaran / promosi (email, notifikasi, iklan)
-    </option>
-    <option value="analitik">
-      Analitik &amp; statistik penggunaan
-    </option>
-  </select>
-  </p>
-</div>
+          <!-- 1c. Nama layanan / aplikasi -->
+          <div class="form-group">
+            <label for="serviceName">Nama layanan / aplikasi (terdaftar)</label>
+            <input
+              type="text"
+              id="serviceName"
+              placeholder="Contoh: DANA, OVO, GoPay, ShopeePay, Mandiri, BCA, Tokopedia, Roblox"
+            />
+            <p class="field-hint">
+              Tulis nama resmi layanan sebagaimana tertera di daftar OJK / Komdigi PSE / AFPI / vendor biometrik.
+              Sistem akan menormalisasi huruf (tidak case sensitive). Contoh sah:
+              <em>DANA</em>, <em>OVO</em>, <em>GoPay</em>, <em>ShopeePay</em>, <em>Mandiri</em>, <em>BCA</em>, <em>Tokopedia</em>, <em>Roblox</em>.
+            </p>
+          </div>
+        </div>
 
-  <!-- 5. Pihak ketiga -->
-  <div class="form-group">
-    <label>Apakah melibatkan pihak ketiga (vendor / cloud / mitra)?</label>
-    <div class="inline-options">
-      <label><input type="radio" name="thirdParty" value="yes" /> Ya</label> <label
-        ><input type="radio" name="thirdParty" value="no" /> Tidak</label
-      >
-    </div>
-  </div>
+        <!-- =================== -->
+        <!-- 2. DATA PRIBADI    -->
+        <!-- =================== -->
+        <div class="form-section">
+          <h3 class="form-section-title">2. Data Pribadi yang Diproses</h3>
 
-  <!-- 9. Penjelasan tujuan ke pengguna (UU PDP: purpose limitation) -->
-  <div class="form-group">
-    <label>Apakah tujuan pengumpulan data dijelaskan dengan jelas ke pengguna?</label>
-    <div class="inline-options">
-      <label
-        ><input
-          type="radio"
-          name="purposeSpecified"
-          value="yes"
-        />
-        Ya, dijelaskan di awal (privacy policy / form)</label
-      >
-      <label
-        ><input type="radio" name="purposeSpecified" value="no" />
-        Tidak dijelaskan secara jelas</label
-      >
-    </div>
-  </div>
+          <!-- 2. Jenis data pribadi utama -->
+          <div class="form-group">
+            <label for="dataType">Jenis data pribadi utama</label>
+            <select id="dataType" required>
+              <option value="">-- Pilih jenis data --</option>
+              <option value="identitas">Identitas (KTP/SIM/NIK)</option>
+              <option value="biometrik">Biometrik (wajah, suara)</option>
+              <option value="umum">Data umum (nama, email)</option>
+              <option value="keuangan">Data finansial</option>
+              <option value="lokasi">Data lokasi (GPS)</option>
+              <option value="perilaku">Data perilaku pengguna</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
 
-  <!-- 6. Mekanisme enkripsi -->
-  <div class="form-group">
-    <label for="encryption">Cara melindungi data dengan enkripsi</label>
-    <select id="encryption" required>
-      <option value="">-- Pilih kondisi --</option>
-      <option value="none">Tidak ada enkripsi khusus</option>
-      <option value="in_transit">
-        Hanya saat dikirim (in transit, misalnya HTTPS)
-      </option>
-      <option value="at_rest">
-        Hanya saat disimpan (at rest, misalnya enkripsi database)
-      </option>
-      <option value="both">
-        Saat dikirim dan saat disimpan (in transit &amp; at rest)
-      </option>
-    </select>
-  </div>
+          <!-- 2b. Jenis data spesifik untuk analisis legalitas -->
+          <div class="form-group">
+            <label>Jenis data spesifik yang dikumpulkan (untuk analisis legalitas)</label>
 
-  <!-- 7. Kontrol akses -->
-  <div class="form-group">
-    <label for="accessControl">Kontrol akses ke data</label>
-    <select id="accessControl" required>
-      <option value="">-- Pilih jenis akses --</option>
-      <option value="none">Tidak ada kontrol akses formal</option>
-      <option value="basic">Dasar (hanya username/password)</option>
-      <option value="role_based">
-        Berbasis peran (hanya orang tertentu yang boleh akses)
-      </option>
-    </select>
-  </div>
+            <div class="inline-options checkbox-group">
+              <label><input type="checkbox" name="legalDataCategory" value="ktp" /> KTP</label>
+              <label><input type="checkbox" name="legalDataCategory" value="sim" /> SIM</label>
+              <label><input type="checkbox" name="legalDataCategory" value="selfie" /> Selfie wajah</label>
 
-  <!-- 8. Metode autentikasi (skripsi: Metode Autentikasi) -->
-  <div class="form-group">
-    <label for="authMethod">Metode login / autentikasi pengguna</label>
-    <select id="authMethod" required>
-      <option value="">-- Pilih metode --</option>
-      <option value="none">Tidak ada autentikasi khusus</option>
-      <option value="password_only">Password saja</option>
-      <option value="password_mfa">
-        Password + faktor tambahan (OTP, aplikasi autentikator, dsb.)
-      </option>
-      <option value="sso">
-        Login lewat pihak ketiga (SSO / OAuth, misalnya Google, Facebook)
-      </option>
-    </select>
-  </div>
+              <label><input type="checkbox" name="legalDataCategory" value="nama" /> Nama lengkap</label>
+              <label><input type="checkbox" name="legalDataCategory" value="alamat" /> Alamat</label>
 
-  <!-- 10. Consent (UU PDP: dasar pemrosesan via persetujuan) -->
-  <div class="form-group">
-    <label for="consentType">Cara meminta persetujuan (consent) pengguna</label>
-    <select id="consentType" required>
-      <option value="">-- Pilih cara consent --</option>
-      <option value="none">Tidak ada consent khusus</option>
-      <option value="implicit">
-        Tersirat (hanya lewat syarat &amp; ketentuan umum)
-      </option>
-      <option value="explicit">
-        Jelas &amp; spesifik (checkbox / tombol setuju yang terpisah)
-      </option>
-    </select>
-  </div>
+              <label><input type="checkbox" name="legalDataCategory" value="wajah" /> Wajah (biometrik)</label>
+              <label><input type="checkbox" name="legalDataCategory" value="suara" /> Suara (biometrik)</label>
+            </div>
 
-  <!-- 11. Kebijakan privasi (NIST: Govern) -->
-  <div class="form-group">
-    <label for="privacyPolicy">
-      Apakah ada kebijakan privasi / aturan tertulis tentang pengelolaan data?
-    </label>
-    <select id="privacyPolicy" required>
-      <option value="">-- Pilih kondisi --</option>
-      <option value="none">Tidak ada dokumen kebijakan privasi</option>
-      <option value="informal">Ada, tapi belum rapi / belum konsisten</option>
-      <option value="formal">
-        Ada, tertulis dan sudah disosialisasikan ke tim
-      </option>
-    </select>
-  </div>
+            <p class="field-hint">
+              Dipakai untuk logika: Bank–KTP/SIM/Selfie, Website–KTP/SIM, E-commerce–Nama/Alamat, Game–Wajah/Suara.
+            </p>
+          </div>
+        </div>
 
-  <!-- 12. Rencana respons insiden (UU PDP + NIST: Respond) -->
-  <div class="form-group">
-    <label for="incidentResponsePlan">
-      Jika terjadi kebocoran data, apakah ada rencana apa yang harus dilakukan?
-    </label>
-    <select id="incidentResponsePlan" required>
-      <option value="">-- Pilih kondisi --</option>
-      <option value="not_available">Tidak ada rencana tertulis</option>
-      <option value="documented">Ada dokumen rencana, tapi jarang diuji</option>
-      <option value="tested_regularly">
-        Ada rencana dan diuji secara berkala
-      </option>
-    </select>
-  </div>
+        <!-- =================== -->
+        <!-- 3. AKTIVITAS & TUJUAN -->
+        <!-- =================== -->
+        <div class="form-section">
+          <h3 class="form-section-title">3. Aktivitas &amp; Tujuan Pemrosesan</h3>
 
-  <!-- 13. Sistem deteksi insiden (NIST: Detect) -->
-  <div class="form-group">
-    <label for="detectSystem">
-      Apakah ada sistem untuk memantau dan mendeteksi insiden keamanan?
-    </label>
-    <select id="detectSystem" required>
-      <option value="">-- Pilih kondisi --</option>
-      <option value="none">Tidak ada pemantauan khusus</option>
-      <option value="basic">
-        Ada log dasar (misalnya log akses), tapi jarang dicek
-      </option>
-      <option value="advanced">
-        Ada pemantauan rutin / alat khusus (SIEM, alert otomatis, dsb.)
-      </option>
-    </select>
-  </div>
+          <!-- 3. Aktivitas pemrosesan -->
+          <div class="form-group">
+            <label for="processingActivity">Aktivitas pemrosesan utama</label>
+            <select id="processingActivity" required>
+              <option value="">-- Pilih aktivitas --</option>
+              <option value="collection">Pengumpulan data</option>
+              <option value="storage">Penyimpanan data</option>
+              <option value="verification">Verifikasi identitas</option>
+              <option value="analysis">Analisis / pemantauan aktivitas</option>
+              <option value="sharing">Berbagi ke pihak lain</option>
+              <option value="transmission">Pengiriman data</option>
+              <option value="deletion">Penghapusan / pemusnahan data</option>
+            </select>
+          </div>
 
-  <!-- 14. Backup & pemulihan (NIST: Recover) -->
-  <div class="form-group">
-    <label for="backupPolicy">
-      Apakah ada backup dan rencana pemulihan data jika terjadi masalah?
-    </label>
-    <select id="backupPolicy" required>
-      <option value="">-- Pilih kondisi --</option>
-      <option value="none">Tidak ada backup</option>
-      <option value="backups">
-        Ada backup, tapi belum pernah diuji proses pemulihannya
-      </option>
-      <option value="tested">
-        Ada backup dan proses pemulihan sudah pernah diuji
-      </option>
-    </select>
-  </div>
+          <!-- 4. Tujuan pemrosesan -->
+          <div class="form-group">
+            <label for="processingPurpose">Tujuan utama pemrosesan data</label>
+            <select id="processingPurpose" required>
+              <option value="">-- Pilih tujuan utama --</option>
+              <option value="verifikasi_identitas">Verifikasi identitas / umur pengguna</option>
+              <option value="penyediaan_layanan">
+                Menyediakan layanan inti (misalnya akses fitur aplikasi)
+              </option>
+              <option value="keamanan_pencegahan_penipuan">
+                Keamanan &amp; pencegahan penipuan
+              </option>
+              <option value="penagihan_pembayaran">
+                Penagihan &amp; pengelolaan pembayaran
+              </option>
+              <option value="personalisasi">
+                Personalisasi tampilan / rekomendasi konten
+              </option>
+              <option value="pemasaran">
+                Pemasaran / promosi (email, notifikasi, iklan)
+              </option>
+              <option value="analitik">
+                Analitik &amp; statistik penggunaan
+              </option>
+            </select>
+          </div>
+        </div>
 
-  <div class="form-actions">
-    <button type="submit" class="btn-primary">Hitung Risiko</button>
-    <button type="reset" class="btn-secondary" id="reset-btn">Reset</button>
-  </div>
-</form>
+        <!-- =================== -->
+        <!-- 4. LEGALITAS & GOVERNANCE -->
+        <!-- =================== -->
+        <div class="form-section">
+          <h3 class="form-section-title">4. Legalitas &amp; Tata Kelola</h3>
+
+          <!-- 5. Pihak ketiga -->
+          <div class="form-group">
+            <label>Apakah melibatkan pihak ketiga (vendor / cloud / mitra)?</label>
+            <div class="inline-options">
+              <label><input type="radio" name="thirdParty" value="yes" /> Ya</label>
+              <label><input type="radio" name="thirdParty" value="no" /> Tidak</label>
+            </div>
+          </div>
+
+          <!-- 9. Penjelasan tujuan ke pengguna -->
+          <div class="form-group">
+            <label>Apakah tujuan pengumpulan data dijelaskan dengan jelas ke pengguna?</label>
+            <div class="inline-options">
+              <label>
+                <input type="radio" name="purposeSpecified" value="yes" />
+                Ya, dijelaskan di awal (privacy policy / form)
+              </label>
+              <label>
+                <input type="radio" name="purposeSpecified" value="no" />
+                Tidak dijelaskan secara jelas
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================== -->
+        <!-- 5. PENGAMANAN & NIST -->
+        <!-- =================== -->
+        <div class="form-section">
+          <h3 class="form-section-title">5. Pengamanan Teknis &amp; Organisasi</h3>
+
+          <!-- 6. Enkripsi -->
+          <div class="form-group">
+            <label for="encryption">Cara melindungi data dengan enkripsi</label>
+            <select id="encryption" required>
+              <option value="">-- Pilih kondisi --</option>
+              <option value="none">Tidak ada enkripsi khusus</option>
+              <option value="in_transit">
+                Hanya saat dikirim (in transit, misalnya HTTPS)
+              </option>
+              <option value="at_rest">
+                Hanya saat disimpan (at rest, misalnya enkripsi database)
+              </option>
+              <option value="both">
+                Saat dikirim dan saat disimpan (in transit &amp; at rest)
+              </option>
+            </select>
+          </div>
+
+          <!-- 7. Kontrol akses -->
+          <div class="form-group">
+            <label for="accessControl">Kontrol akses ke data</label>
+            <select id="accessControl" required>
+              <option value="">-- Pilih jenis akses --</option>
+              <option value="none">Tidak ada kontrol akses formal</option>
+              <option value="basic">Dasar (hanya username/password)</option>
+              <option value="role_based">
+                Berbasis peran (hanya orang tertentu yang boleh akses)
+              </option>
+            </select>
+          </div>
+
+          <!-- 8. Metode autentikasi -->
+          <div class="form-group">
+            <label for="authMethod">Metode login / autentikasi pengguna</label>
+            <select id="authMethod" required>
+              <option value="">-- Pilih metode --</option>
+              <option value="none">Tidak ada autentikasi khusus</option>
+              <option value="password_only">Password saja</option>
+              <option value="password_mfa">
+                Password + faktor tambahan (OTP, aplikasi autentikator, dsb.)
+              </option>
+              <option value="sso">
+                Login lewat pihak ketiga (SSO / OAuth, misalnya Google, Facebook)
+              </option>
+            </select>
+          </div>
+
+          <!-- 10. Consent -->
+          <div class="form-group">
+            <label for="consentType">Cara meminta persetujuan (consent) pengguna</label>
+            <select id="consentType" required>
+              <option value="">-- Pilih cara consent --</option>
+              <option value="none">Tidak ada consent khusus</option>
+              <option value="implicit">
+                Tersirat (hanya lewat syarat &amp; ketentuan umum)
+              </option>
+              <option value="explicit">
+                Jelas &amp; spesifik (checkbox / tombol setuju yang terpisah)
+              </option>
+            </select>
+          </div>
+
+          <!-- 11. Kebijakan privasi -->
+          <div class="form-group">
+            <label for="privacyPolicy">
+              Apakah ada kebijakan privasi / aturan tertulis tentang pengelolaan data?
+            </label>
+            <select id="privacyPolicy" required>
+              <option value="">-- Pilih kondisi --</option>
+              <option value="none">Tidak ada dokumen kebijakan privasi</option>
+              <option value="informal">Ada, tapi belum rapi / belum konsisten</option>
+              <option value="formal">
+                Ada, tertulis dan sudah disosialisasikan ke tim
+              </option>
+            </select>
+          </div>
+
+          <!-- 12. Rencana respons insiden -->
+          <div class="form-group">
+            <label for="incidentResponsePlan">
+              Jika terjadi kebocoran data, apakah ada rencana apa yang harus dilakukan?
+            </label>
+            <select id="incidentResponsePlan" required>
+              <option value="">-- Pilih kondisi --</option>
+              <option value="not_available">Tidak ada rencana tertulis</option>
+              <option value="documented">Ada dokumen rencana, tapi jarang diuji</option>
+              <option value="tested_regularly">
+                Ada rencana dan diuji secara berkala
+              </option>
+            </select>
+          </div>
+
+          <!-- 13. Sistem deteksi -->
+          <div class="form-group">
+            <label for="detectSystem">
+              Apakah ada sistem untuk memantau dan mendeteksi insiden keamanan?
+            </label>
+            <select id="detectSystem" required>
+              <option value="">-- Pilih kondisi --</option>
+              <option value="none">Tidak ada pemantauan khusus</option>
+              <option value="basic">
+                Ada log dasar (misalnya log akses), tapi jarang dicek
+              </option>
+              <option value="advanced">
+                Ada pemantauan rutin / alat khusus (SIEM, alert otomatis, dsb.)
+              </option>
+            </select>
+          </div>
+
+          <!-- 14. Backup & pemulihan -->
+          <div class="form-group">
+            <label for="backupPolicy">
+              Apakah ada backup dan rencana pemulihan data jika terjadi masalah?
+            </label>
+            <select id="backupPolicy" required>
+              <option value="">-- Pilih kondisi --</option>
+              <option value="none">Tidak ada backup</option>
+              <option value="backups">
+                Ada backup, tapi belum pernah diuji proses pemulihannya
+              </option>
+              <option value="tested">
+                Ada backup dan proses pemulihan sudah pernah diuji
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- =================== -->
+        <!-- TOMBOL               -->
+        <!-- =================== -->
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Hitung Risiko</button>
+          <button type="reset" class="btn-secondary" id="reset-btn">Reset</button>
+        </div>
+      </form>
     </section>
 
+    <!-- =================== -->
+    <!-- CARD: HASIL ANALISIS -->
+    <!-- =================== -->
     <section class="results-grid">
       <article class="card" id="summary-card">
         <h2>Ringkasan Risiko</h2>
         <div id="summary-content" class="summary-content placeholder">
-          Input Parameter di atas kemudian klik <strong>Hitung Risiko</strong> untuk melihat hasil analisis.
+          Isi parameter di atas kemudian klik <strong>Hitung Risiko</strong> untuk melihat hasil analisis.
         </div>
       </article>
 
@@ -270,7 +379,7 @@
         </div>
         <div id="risk-matrix" class="risk-matrix"></div>
         <p class="matrix-caption">
-          Sumbu vertikal: Impact (1–5), Sumbu horizontal: Likelihood (1–5). Kotak dengan Highlight berwarna putih menunjukkan posisi risiko skenario saat ini.
+          Sumbu vertikal: Impact (1–5), sumbu horizontal: Likelihood (1–5). Kotak dengan highlight berwarna putih menunjukkan posisi risiko skenario saat ini.
         </p>
       </article>
 
@@ -297,15 +406,15 @@
     </section>
   </main>
 
-
   <footer class="app-footer">
     <p>
-      Prototype sistem analisis risiko privasi – dapat digunakan sebagai artefak implementasi dalam skripsi.</a>
+      Prototype sistem analisis risiko privasi – dapat digunakan sebagai artefak implementasi dalam skripsi.
     </p>
   </footer>
 
-  <!-- PENTING: urutan script -->
+  <!-- PENTING: urutan script existing -->
   <script src="rules.js"></script>
+  <script src="legalCheck.js"></script>
   <script src="riskEngine.js"></script>
   <script src="app.js"></script>
 </body>
