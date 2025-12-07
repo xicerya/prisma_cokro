@@ -17,12 +17,63 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // 🟢 Filter otomatis layanan berdasarkan platformType
+  const platformSelect = document.getElementById("platformType");
+  const serviceSelect = document.getElementById("serviceName");
+
+  if (platformSelect && serviceSelect) {
+    const optgroups = serviceSelect.querySelectorAll("optgroup");
+
+    function filterServiceOptions() {
+      const platform = (platformSelect.value || "").toLowerCase();
+
+      // Tampilkan semua dulu
+      optgroups.forEach((g) => {
+        g.hidden = false;
+      });
+
+      // Kalau tidak ada platform / lainnya → biarkan semua muncul
+      if (!platform || platform === "lainnya") {
+        return;
+      }
+
+      optgroups.forEach((g) => {
+        const label = (g.label || "").toLowerCase();
+        let match = false;
+
+        if (platform === "bank" && label.includes("bank (ojk)")) {
+          match = true;
+        } else if (
+          (platform === "ecommerce" || platform === "e-commerce") &&
+          label.includes("pse / e-commerce")
+        ) {
+          match = true;
+        } else if (platform === "fintech" && label.includes("fintech")) {
+          match = true;
+        } else if (
+          (platform === "biometric" || platform === "biometrik") &&
+          label.includes("biometrik / verifikasi internasional")
+        ) {
+          match = true;
+        }
+
+        g.hidden = !match;
+      });
+
+      // reset pilihan setiap kali ganti platform
+      serviceSelect.value = "";
+    }
+
+    platformSelect.addEventListener("change", filterServiceOptions);
+    // jalan sekali di awal (kalau user belum memilih apa-apa, semua tetap muncul)
+    filterServiceOptions();
+  }
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const params = collectParams();
-    console.log("Params:", params); // buat cek di console
     const result = RiskEngine.analyze(params);
-    console.log("Result:", result);
+
     renderSummary(params, result);
     renderMatrix(result);
     renderPDP(result.pdpResults);
@@ -48,50 +99,69 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 0);
   });
 
-function collectParams() {
-  const scenarioName = document.getElementById("scenarioName").value.trim();
-  const dataType = document.getElementById("dataType").value;
-  const processingActivity = document.getElementById("processingActivity").value;
-  const processingPurpose = document
-    .getElementById("processingPurpose")
-    .value.trim();
+  // ======================
+  // KUMPUL PARAMETER FORM
+  // ======================
+  function collectParams() {
+    const scenarioName = document.getElementById("scenarioName").value.trim();
 
-  const encryption = document.getElementById("encryption").value;
-  const accessControl = document.getElementById("accessControl").value;
-  const authMethod = document.getElementById("authMethod").value;
-  const consentType = document.getElementById("consentType").value;
-  const privacyPolicy = document.getElementById("privacyPolicy").value;
-  const incidentResponsePlan =
-    document.getElementById("incidentResponsePlan").value;
-  const detectSystem = document.getElementById("detectSystem").value;
-  const backupPolicy = document.getElementById("backupPolicy").value;
+    const platformType = document.getElementById("platformType").value;
+    const serviceName = document.getElementById("serviceName").value;
 
-  const thirdParty =
-    (document.querySelector('input[name="thirdParty"]:checked') || {}).value ||
-    "no";
+    const dataType = document.getElementById("dataType").value;
+    const processingActivity =
+      document.getElementById("processingActivity").value;
+    const processingPurpose = document
+      .getElementById("processingPurpose")
+      .value.trim();
 
-  const purposeSpecified =
-    (document.querySelector('input[name="purposeSpecified"]:checked') || {})
-      .value || "no";
+    const encryption = document.getElementById("encryption").value;
+    const accessControl = document.getElementById("accessControl").value;
+    const authMethod = document.getElementById("authMethod").value;
+    const consentType = document.getElementById("consentType").value;
+    const privacyPolicy = document.getElementById("privacyPolicy").value;
+    const incidentResponsePlan =
+      document.getElementById("incidentResponsePlan").value;
+    const detectSystem = document.getElementById("detectSystem").value;
+    const backupPolicy = document.getElementById("backupPolicy").value;
 
-  return {
-    scenarioName,
-    dataType,
-    processingActivity,
-    processingPurpose,
-    thirdParty,
-    encryption,
-    accessControl,
-    authMethod,
-    purposeSpecified,
-    consentType,
-    privacyPolicy,
-    incidentResponsePlan,
-    detectSystem,
-    backupPolicy,
-  };
-}
+    const thirdParty =
+      (document.querySelector('input[name="thirdParty"]:checked') || {})
+        .value || "no";
 
+    const purposeSpecified =
+      (document.querySelector('input[name="purposeSpecified"]:checked') || {})
+        .value || "no";
+
+    const dataCategories = [];
+    document
+      .querySelectorAll('input[name="legalDataCategory"]:checked')
+      .forEach((el) => dataCategories.push(el.value));
+
+    return {
+      scenarioName,
+      platformType,
+      serviceName,
+      dataType,
+      processingActivity,
+      processingPurpose,
+      thirdParty,
+      encryption,
+      accessControl,
+      authMethod,
+      purposeSpecified,
+      consentType,
+      privacyPolicy,
+      incidentResponsePlan,
+      detectSystem,
+      backupPolicy,
+      dataCategories
+    };
+  }
+
+  // ======================
+  // RINGKASAN & HASIL
+  // ======================
   function renderSummary(params, result) {
     summaryContent.classList.remove("placeholder");
     const badgeClass =
@@ -114,6 +184,25 @@ function collectParams() {
       : `<p style="margin-top:0.5rem;font-size:0.8rem;color:#9ca3af;">
             Nilai Likelihood &amp; Impact menggunakan input manual pengguna.
          </p>`;
+
+    const legalBlock =
+      result.legalContext && result.legalContext.legalStatus
+        ? `<p style="margin-top:0.5rem;font-size:0.8rem;color:#6ee7b7;">
+             Legalitas: ${
+               result.legalContext.legalStatus.isLegal
+                 ? "LEGAL"
+                 : "PERLU KEHATI-HATIAN"
+             }${
+             result.legalContext.legalStatus.registry
+               ? " – " +
+                 escapeHtml(result.legalContext.legalStatus.registry.label)
+               : ""
+           }.<br/>
+             ${escapeHtml(
+               result.legalContext.legalStatus.reason || ""
+             )}
+           </p>`
+        : "";
 
     summaryContent.innerHTML = `
       <p style="margin-bottom:0.75rem;">
@@ -138,6 +227,7 @@ function collectParams() {
         <span class="badge ${badgeClass}">${result.riskLevel}</span>
       </p>
       ${autoBlock}
+      ${legalBlock}
     `;
   }
 
@@ -174,44 +264,44 @@ function collectParams() {
     });
   }
 
-function renderPDP(pdpResults) {
-  pdpContainer.classList.remove("placeholder");
-  if (!pdpResults || pdpResults.length === 0) {
-    pdpContainer.textContent = "Tidak ada hasil evaluasi.";
-    return;
-  }
+  function renderPDP(pdpResults) {
+    pdpContainer.classList.remove("placeholder");
+    if (!pdpResults || pdpResults.length === 0) {
+      pdpContainer.textContent = "Tidak ada hasil evaluasi.";
+      return;
+    }
 
-  let html = `
-    <table>
-      <thead>
-        <tr>
-          <th>Aspek</th>
-          <th>Status</th>
-          <th>Pasal/Ayat Terkait</th>
-          <th>Keterangan</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  for (const r of pdpResults) {
-    html += `
-      <tr>
-        <td>${escapeHtml(r.aspect)}</td>
-        <td>
-          <span class="status-pill ${r.code}">
-            ${escapeHtml(r.status)}
-          </span>
-        </td>
-        <td>${escapeHtml(r.legalRef || "-")}</td>
-        <td>${escapeHtml(r.note)}</td>
-      </tr>
+    let html = `
+      <table>
+        <thead>
+          <tr>
+            <th>Aspek</th>
+            <th>Status</th>
+            <th>Pasal/Ayat Terkait</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
     `;
-  }
 
-  html += "</tbody></table>";
-  pdpContainer.innerHTML = html;
-}
+    for (const r of pdpResults) {
+      html += `
+        <tr>
+          <td>${escapeHtml(r.aspect)}</td>
+          <td>
+            <span class="status-pill ${r.code}">
+              ${escapeHtml(r.status)}
+            </span>
+          </td>
+          <td>${escapeHtml(r.legalRef || "-")}</td>
+          <td>${escapeHtml(r.note)}</td>
+        </tr>
+      `;
+    }
+
+    html += "</tbody></table>";
+    pdpContainer.innerHTML = html;
+  }
 
   function renderNIST(nistResults) {
     nistContainer.classList.remove("placeholder");
